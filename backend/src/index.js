@@ -44,6 +44,10 @@ app.use("/api/v1/rent/trip", tripRouter)
 
 connectDB();
 
-app.listen(port,()=>{
-    console.log(`App is running on port no: ${port}`);
-})
+if (process.env.NODE_ENV !== "production") {
+    app.listen(port,()=>{
+        console.log(`App is running on port no: ${port}`);
+    })
+}
+
+export default app;
