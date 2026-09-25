@@ -4,7 +4,6 @@
 
 import { Property } from "../Models/propertyModel.js";
 import { APIFeatures } from "../utils/APIFeatures.js";
-import imagekit from "../utils/ImagekitIO.js";
 
 
 // get all properties
@@ -17,12 +16,12 @@ const getProperties = async(req,res)=>{
       .paginate();
 
       const allProperties = await Property.find();
-
       const doc = await features.query;
 
       res.status(200).json({
         status:"success",
         no_of_responses: doc.length,
+        all_properties: allProperties.length,
         data:doc
       })
     }catch(error){
@@ -53,7 +52,7 @@ const getProperty = async(req,res)=>{
     }
 }
 
-export{
+export {
     getProperties,
     getProperty
-}
+};

@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import gsap from "gsap";
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import "../../css/Home.css";
 
-import {useDispatch, useSelector} from "react-redux";
-import {propertyAction} from "../../store/Property/property-slice"
+import { useDispatch, useSelector } from "react-redux";
 import { getAllProperties } from "../../store/Property/property-action";
+import { propertyAction } from "../../store/Property/property-slice";
 
 const Card = ({ id, image, name, address, price }) => {
   return (
@@ -34,12 +34,12 @@ const Card = ({ id, image, name, address, price }) => {
 };
 
 const PropertyList = () => {
-  const [currentPage, setCurrentPage] = useState({page:1});
-  
-  const dispatch = useDispatch();
-  const {properties,totalProperties} = useSelector((state)=> state.properties)
+  const [currentPage, setCurrentPage] = useState({ page: 1 });
 
-  const lastPage = Math.ceil(totalProperties / 12);
+  const dispatch = useDispatch();
+  const { properties, totalProperties, loading } = useSelector((state) => state.properties);
+
+  const lastPage = Math.ceil(totalProperties / 12) || 1;
 
   const propertyListRef = useRef(null);
 
@@ -70,17 +70,19 @@ const PropertyList = () => {
 
   return (
     <>
-      {properties.length === 0 ? (
-        <p className={"not_found"}>Property not found</p>
+      {loading ? (
+        <p className="not_found">Loading properties...</p>
+      ) : properties.length === 0 ? (
+        <p className="not_found">Property not found</p>
       ) : (
         <div className="propertylist" ref={propertyListRef}>
           {properties.map((property) => (
             <Card
               key={property._id}
               id={property._id}
-              image={property.images[0].url}
+              image={property.images?.[0]?.url || "https://via.placeholder.com/300x200?text=Property"}
               name={property.propertyName}
-              address={`${property.address.city}, ${property.address.state} ${property.address.pincode}`}
+              address={`${property.address?.city || ""}, ${property.address?.state || ""} ${property.address?.pincode || ""}`.trim()}
               price={property.price}
               slug={property.slug}
             />

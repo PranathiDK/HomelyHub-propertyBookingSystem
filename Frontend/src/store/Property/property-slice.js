@@ -19,11 +19,15 @@ const propertySlice = createSlice({
     reducers:{
         getRequest(state){
             state.loading = true;
+            state.error = null;
         },
         getProperties(state,action){
-            state.properties = action.payload.data;
-            state.totalProperties = action.payload.all_properties;
-            state.loading=false; // req finished => hide the loader
+            state.properties = Array.isArray(action.payload?.data) ? action.payload.data : [];
+            state.totalProperties = Number(
+                action.payload?.all_properties ?? action.payload?.no_of_responses ?? state.properties.length ?? 0
+            );
+            state.loading = false; // req finished => hide the loader
+            state.error = null;
         },
         updateSearchParams:(state,action)=>{
             state.searchParams= Object.keys(action.payload).length ===0 ?{} :{
@@ -33,7 +37,8 @@ const propertySlice = createSlice({
         },
 
         getErrors(state,action){
-            state.error = action.payload
+            state.error = action.payload;
+            state.loading = false;
         }
 
     }

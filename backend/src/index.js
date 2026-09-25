@@ -1,11 +1,11 @@
-import express from "express";
-import dotenv from "dotenv";
-import cors from "cors";
 import cookieParser from "cookie-parser";
-import {router} from "./routes/userRoutes.js"
-import { propertyRouter } from "./routes/propertyRouter.js";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
 import { bookingRouter } from "./routes/bookingRouter.js";
+import { propertyRouter } from "./routes/propertyRouter.js";
 import { tripRouter } from "./routes/tripRouter.js";
+import { router } from "./routes/userRoutes.js";
 
 
 import connectDB from "./utils/db.js";
@@ -24,11 +24,13 @@ app.use(express.urlencoded({limit:"100mb", extended:true}))
 app.use(cookieParser())
 
 app.use(cors({
-    origin:process.env.ORIGIN_ACCESS_URL,
-    credential:true
+    origin: process.env.ORIGIN_ACCESS_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
 }))
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 
 //test route
@@ -44,10 +46,8 @@ app.use("/api/v1/rent/trip", tripRouter)
 
 connectDB();
 
-if (process.env.NODE_ENV !== "production") {
-    app.listen(port,()=>{
-        console.log(`App is running on port no: ${port}`);
-    })
-}
+app.listen(port, () => {
+    console.log(`App is running on port no: ${port}`);
+});
 
 export default app;
